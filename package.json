@@ -1,0 +1,11 @@
+{
+  "name": "reel-maker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Monorepo scaffold for Reel Maker mobile app and backend services.",
+  "scripts": {
+    "test": "node --experimental-strip-types --test __tests__/structure.test.ts",
+    "test:coverage": "node --experimental-strip-types --experimental-test-coverage --test __tests__/structure.test.ts"
+  }
+}
