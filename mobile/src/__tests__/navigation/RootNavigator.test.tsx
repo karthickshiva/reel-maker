@@ -1,19 +1,40 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import React from 'react';
+import ReactTestRenderer from 'react-test-renderer';
+
+import { RootNavigator } from '../../navigation/RootNavigator';
+
+jest.mock('../../store/useAuthStore', () => ({
+  useAuthStore: jest.fn(),
+}));
+
+const { useAuthStore } = jest.requireMock('../../store/useAuthStore') as {
+  useAuthStore: jest.Mock;
+};
 
 describe('RootNavigator', () => {
-  const rootNavigatorPath = path.resolve(
-    __dirname,
-    '../../navigation/RootNavigator.tsx',
-  );
-  const source = fs.readFileSync(rootNavigatorPath, 'utf8');
+  it('renders Auth flow when unauthenticated', async () => {
+    useAuthStore.mockReturnValue({ isAuthenticated: false });
+    let tree: ReactTestRenderer.ReactTestRenderer;
 
-  it('renders AuthNavigator when unauthenticated', () => {
-    expect(source).toContain('isAuthenticated ?');
-    expect(source).toContain('name="Auth"');
+    await ReactTestRenderer.act(async () => {
+      tree = ReactTestRenderer.create(<RootNavigator />);
+    });
+
+    const labels = tree!.root.findAll(node => typeof node.props?.children === 'string');
+    expect(labels.some(node => node.props.children === 'Auth')).toBe(true);
+    expect(labels.some(node => node.props.children === 'Main')).toBe(false);
   });
 
-  it('renders MainTabNavigator when authenticated', () => {
-    expect(source).toContain('name="Main"');
+  it('renders Main flow when authenticated', async () => {
+    useAuthStore.mockReturnValue({ isAuthenticated: true });
+    let tree: ReactTestRenderer.ReactTestRenderer;
+
+    await ReactTestRenderer.act(async () => {
+      tree = ReactTestRenderer.create(<RootNavigator />);
+    });
+
+    const labels = tree!.root.findAll(node => typeof node.props?.children === 'string');
+    expect(labels.some(node => node.props.children === 'Main')).toBe(true);
+    expect(labels.some(node => node.props.children === 'Auth')).toBe(false);
   });
 });

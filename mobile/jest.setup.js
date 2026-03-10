@@ -19,11 +19,7 @@ jest.mock(
 
     const createNativeStackNavigator = () => ({
       Navigator: ({ children }) => React.createElement(View, null, children),
-      Screen: ({ name, component: Component }) =>
-        React.createElement(View, null, [
-          React.createElement(Text, { key: `${name}-label` }, name),
-          React.createElement(Component, { key: `${name}-component` }),
-        ]),
+      Screen: ({ name }) => React.createElement(Text, null, name),
       Group: ({ children }) => React.createElement(View, null, children),
     });
 
@@ -40,11 +36,7 @@ jest.mock(
 
     const createBottomTabNavigator = () => ({
       Navigator: ({ children }) => React.createElement(View, null, children),
-      Screen: ({ name, component: Component }) =>
-        React.createElement(View, null, [
-          React.createElement(Text, { key: `${name}-label` }, name),
-          React.createElement(Component, { key: `${name}-component` }),
-        ]),
+      Screen: ({ name }) => React.createElement(Text, null, name),
     });
 
     return { createBottomTabNavigator };

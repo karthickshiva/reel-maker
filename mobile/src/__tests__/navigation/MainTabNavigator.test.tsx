@@ -1,16 +1,22 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import React from 'react';
+import ReactTestRenderer from 'react-test-renderer';
+
+import { MainTabNavigator } from '../../navigation/MainTabNavigator';
 
 describe('MainTabNavigator', () => {
-  it('includes all 4 tabs', () => {
-    const source = fs.readFileSync(
-      path.resolve(__dirname, '../../navigation/MainTabNavigator.tsx'),
-      'utf8',
-    );
+  it('renders all four root tabs', async () => {
+    let tree: ReactTestRenderer.ReactTestRenderer;
 
-    expect(source).toContain('name="HomeTab"');
-    expect(source).toContain('name="CreateTab"');
-    expect(source).toContain('name="LibraryTab"');
-    expect(source).toContain('name="ProfileTab"');
+    await ReactTestRenderer.act(async () => {
+      tree = ReactTestRenderer.create(<MainTabNavigator />);
+    });
+
+    const hasLabel = (label: string) =>
+      tree!.root.findAll(node => node.props?.children === label).length > 0;
+
+    expect(hasLabel('HomeTab')).toBe(true);
+    expect(hasLabel('CreateTab')).toBe(true);
+    expect(hasLabel('LibraryTab')).toBe(true);
+    expect(hasLabel('ProfileTab')).toBe(true);
   });
 });
